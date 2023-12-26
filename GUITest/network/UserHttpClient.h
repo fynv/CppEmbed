@@ -19,12 +19,15 @@ extern "C"
 
 namespace User
 {
+	class HttpGetResult;
+	typedef std::shared_ptr<HttpGetResult> SPHttpGetResult;
+
 	class HttpGetResult
 	{
 	public:
-		HttpGetResult(void* cptr) : m_cptr(cptr)
+		static SPHttpGetResult New(void* c_ptr)
 		{
-
+			return SPHttpGetResult(new HttpGetResult(c_ptr));
 		}
 
 		~HttpGetResult()
@@ -48,17 +51,22 @@ namespace User
 		}
 
 	private:
+		HttpGetResult(void* cptr) : m_cptr(cptr)
+		{
+
+		}
 		void* m_cptr;
 	};
 
-	typedef std::shared_ptr<HttpGetResult> SPHttpGetResult;
+	class HttpClient;
+	typedef std::shared_ptr<HttpClient> SPHttpClient;
 
 	class HttpClient
 	{
 	public:
-		HttpClient() : m_cptr(HttpClient_New())
+		static SPHttpClient New()
 		{
-
+			return SPHttpClient(new HttpClient);
 		}
 
 		~HttpClient()
@@ -68,8 +76,7 @@ namespace User
 
 		SPHttpGetResult Get(const char* url)
 		{
-			SPHttpGetResult res(new HttpGetResult(HttpClient_Get(m_cptr, url)));
-			return res;
+			return HttpGetResult::New(HttpClient_Get(m_cptr, url));
 		}
 
 		typedef void (*GetCallback)(SPHttpGetResult result, void* userData);
@@ -82,6 +89,10 @@ namespace User
 
 	private:
 		void* m_cptr;
+		HttpClient() : m_cptr(HttpClient_New())
+		{
+
+		}
 
 		struct TUserData
 		{
@@ -92,13 +103,11 @@ namespace User
 		static void s_get_callback(void* ptr_result, void* userData)
 		{
 			TUserData* ud = (TUserData*)userData;
-			SPHttpGetResult res(new HttpGetResult(ptr_result));
+			SPHttpGetResult res = HttpGetResult::New(ptr_result);
 			ud->callback(res, ud->userData);
 			delete ud;
 		}
 	};
-
-	typedef std::shared_ptr<HttpClient> SPHttpClient;
 	
 }
 

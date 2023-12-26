@@ -19,15 +19,17 @@ extern "C"
 
 namespace User
 {
+	class ScriptWindow;
+	typedef std::shared_ptr<ScriptWindow> SPScriptWindow;
+
 	class ScriptWindow
 	{
 	public:
-		ScriptWindow() : m_cptr(ScriptWindow_New())
+		static SPScriptWindow New()
 		{
-
-
+			return SPScriptWindow(new ScriptWindow);
 		}
-
+		
 		~ScriptWindow()
 		{
 			ScriptWindow_Delete(m_cptr);
@@ -85,8 +87,11 @@ namespace User
 
 	private:
 		void* m_cptr;
-	};
+		ScriptWindow() : m_cptr(ScriptWindow_New())
+		{
 
-	typedef std::shared_ptr<ScriptWindow> SPScriptWindow;
+
+		}
+	};
 
 }

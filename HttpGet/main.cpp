@@ -13,7 +13,7 @@ extern "C"
 class App
 {
 public:
-	App() : m_http(new HttpClient)
+	App() : m_http(HttpClient::New())
 	{
 		/*auto res = m_http.Get("https://www.baidu.com/");
 		std::vector<char> str(res.GetSize() + 1, 0);

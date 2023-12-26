@@ -54,21 +54,37 @@ namespace User
 
 	typedef std::shared_ptr<Element> SPElement;
 
+	
+	class Text;
+	typedef std::shared_ptr<Text> SPText;
+
 	class Text : public Element
 	{
 	public:
+		static SPText New(const char* text)
+		{
+			return SPText(new Text(text));
+		}
+
+	protected:
 		Text(const char* text) : Element(Text_New(text))
 		{
 
 		}
-
 	};
 
-	typedef std::shared_ptr<Text> SPText;
+	class SameLine;
+	typedef std::shared_ptr<SameLine> SPSameLine;
 
 	class SameLine : public Element
 	{
 	public:
+		static SPSameLine New()
+		{
+			return SPSameLine(new SameLine);
+		}
+
+	protected:
 		SameLine() : Element(SameLine_New())
 		{
 
@@ -76,15 +92,15 @@ namespace User
 		}
 	};
 
-	typedef std::shared_ptr<SameLine> SPSameLine;
+	class InputText;
+	typedef std::shared_ptr<InputText> SPInputText;
 
 	class InputText : public Element
 	{
 	public:
-		InputText(const char* name, int size = 256, const char* str = nullptr)
-			: Element(InputText_New(name, size, str))
+		static SPInputText New(const char* name, int size = 256, const char* str = nullptr)
 		{
-
+			return SPInputText(new InputText(name, size, str));
 		}
 
 		const char* GetText()
@@ -96,24 +112,36 @@ namespace User
 		{
 			InputText_SetText(m_cptr, text);
 		}
+
+	protected:
+		InputText(const char* name, int size, const char* str)
+			: Element(InputText_New(name, size, str))
+		{
+
+		}
 	};
 
-	typedef std::shared_ptr<InputText> SPInputText;
+	class Button;
+	typedef std::shared_ptr<Button> SPButton;
 
 	class Button : public Element
 	{
 	public:
-		Button(const char* name) : Element(Button_New(name))
+		static SPButton New(const char* name)
 		{
-
+			return SPButton(new Button(name));
 		}
-
+		
 		void SetOnClick(ClickCallback callback, void* callback_data)
 		{
 			Button_SetOnClick(m_cptr, callback, callback_data);
 		}
-	};
 
-	typedef std::shared_ptr<Button> SPButton;
+	protected:
+		Button(const char* name) : Element(Button_New(name))
+		{
+
+		}
+	};
 
 }

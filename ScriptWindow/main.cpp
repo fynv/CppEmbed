@@ -16,15 +16,15 @@ class App
 {
 public:
 	App()
-		: m_http(new HttpClient)
-		, m_window(new ScriptWindow)
-		, m_input_text(new InputText("##URL", 256, "https://www.gutenberg.org/cache/epub/1065/pg1065.txt"))
+		: m_http(HttpClient::New())
+		, m_window(ScriptWindow::New())
+		, m_input_text(InputText::New("##URL", 256, "https://www.gutenberg.org/cache/epub/1065/pg1065.txt"))
 	{		
-		SPButton button_get(new Button("Get!"));
+		SPButton button_get = Button::New("Get!");
 		button_get->SetOnClick(buttonOnClick, this);
 
-		m_window->Add(SPText(new Text("url:")));
-		m_window->Add(SPSameLine(new SameLine));
+		m_window->Add(Text::New("url:"));
+		m_window->Add(SameLine::New());
 		m_window->Add(m_input_text);
 		m_window->Add(button_get);
 		m_window->SetShow(true);
