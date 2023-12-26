@@ -20,7 +20,7 @@ public:
 		, m_window(ScriptWindow::New())
 		, m_input_text(InputText::New("##URL", 256, "https://www.gutenberg.org/cache/epub/1065/pg1065.txt"))
 	{		
-		SPButton button_get = Button::New("Get!");
+		auto button_get = Button::New("Get!");
 		button_get->SetOnClick(buttonOnClick, this);
 
 		m_window->Add(Text::New("url:"));
