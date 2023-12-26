@@ -14,32 +14,3 @@
 
 
 #include <memory>
-
-namespace User
-{
-	class CPtr
-	{
-	public:
-		void* ptr() const 
-		{
-			return m_ptr;
-		}
-
-	protected:
-		void* m_ptr;
-		CPtr(void* ptr) : m_ptr(ptr) {}
-		virtual ~CPtr() {}	
-	};
-
-	class Wrapper : public std::shared_ptr<CPtr>
-	{
-	public:
-		using std::shared_ptr<CPtr>::shared_ptr;
-		void* ptr()
-		{
-			return (*this)->ptr();
-		}		
-	};
-	
-}
-

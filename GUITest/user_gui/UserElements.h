@@ -20,103 +20,100 @@ extern "C"
 
 namespace User
 {
-	class Element : public Wrapper
+	class Element
 	{
-	protected:
-		class _Ptr : public CPtr
-		{
-		public:
-			_Ptr(void* ptr) : CPtr(ptr) {}
-			~_Ptr()
-			{
-				Element_Delete(m_ptr);
-			}
-		};
-
 	public:
-		using Wrapper::Wrapper;
+		virtual ~Element()
+		{
+			Element_Delete(m_cptr);
+		}
+
+		void* ptr()
+		{
+			return m_cptr;
+		}
 
 		const char* GetName()
 		{
-			return Element_GetName(ptr());
+			return Element_GetName(m_cptr);
 		}
 
 		void SetName(const char* name)
 		{
-			Element_SetName(ptr(), name);
+			Element_SetName(m_cptr, name);
 		}
 
+
+	protected:
+		void* m_cptr;
+		Element(void* cptr) : m_cptr(cptr)
+		{
+
+		}	
 	};
+
+	typedef std::shared_ptr<Element> SPElement;
 
 	class Text : public Element
 	{
 	public:
-		Text(const char* text) : Element(new _Ptr(Text_New(text)))
+		Text(const char* text) : Element(Text_New(text))
 		{
 
 		}
 
-		Text(const Text& in) : Element(in)
-		{
-
-		}
 	};
+
+	typedef std::shared_ptr<Text> SPText;
 
 	class SameLine : public Element
 	{
 	public:
-		SameLine() : Element(new _Ptr(SameLine_New()))
+		SameLine() : Element(SameLine_New())
 		{
 
-		}
-
-		SameLine(const SameLine& in) : Element(in)
-		{
 
 		}
 	};
 
+	typedef std::shared_ptr<SameLine> SPSameLine;
+
 	class InputText : public Element
 	{
 	public:
-		InputText(const char* name, int size = 256, const char* str = nullptr) 
-			: Element(new _Ptr(InputText_New(name, size, str)))
-		{
-
-		}
-
-		InputText(const InputText& in) : Element(in)
+		InputText(const char* name, int size = 256, const char* str = nullptr)
+			: Element(InputText_New(name, size, str))
 		{
 
 		}
 
 		const char* GetText()
 		{
-			return InputText_GetText(ptr());
+			return InputText_GetText(m_cptr);
 		}
 
 		void SetText(const char* text)
 		{
-			InputText_SetText(ptr(), text);
+			InputText_SetText(m_cptr, text);
 		}
 	};
+
+	typedef std::shared_ptr<InputText> SPInputText;
 
 	class Button : public Element
 	{
 	public:
-		Button(const char* name) : Element(new _Ptr(Button_New(name)))
-		{
-
-		}
-
-		Button(const Button& in) : Element(in)
+		Button(const char* name) : Element(Button_New(name))
 		{
 
 		}
 
 		void SetOnClick(ClickCallback callback, void* callback_data)
 		{
-			Button_SetOnClick(ptr(), callback, callback_data);
+			Button_SetOnClick(m_cptr, callback, callback_data);
 		}
 	};
+
+	typedef std::shared_ptr<Button> SPButton;
+
 }

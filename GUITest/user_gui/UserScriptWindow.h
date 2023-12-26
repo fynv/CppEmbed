@@ -19,59 +19,54 @@ extern "C"
 
 namespace User
 {
-	
-	class ScriptWindow : public Wrapper
+	class ScriptWindow
 	{
-		class _Ptr : public CPtr
-		{
-		public:
-			_Ptr(void* ptr) : CPtr(ptr) {}
-			~_Ptr()
-			{
-				ScriptWindow_Delete(m_ptr);
-			}
-		};
-
 	public:
-		ScriptWindow() : Wrapper(new _Ptr(ScriptWindow_New()))
+		ScriptWindow() : m_cptr(ScriptWindow_New())
 		{
-			
+
+
 		}
 
-		ScriptWindow(const ScriptWindow& in): Wrapper(in)
+		~ScriptWindow()
 		{
+			ScriptWindow_Delete(m_cptr);
+		}
 
+		void* ptr()
+		{
+			return m_cptr;
 		}
 
 		bool GetShow()
 		{
-			return ScriptWindow_GetShow(ptr());
+			return ScriptWindow_GetShow(m_cptr);
 		}
 
 		void SetShow(bool show)
 		{
-			ScriptWindow_SetShow(ptr(), show);
+			ScriptWindow_SetShow(m_cptr, show);
 		}
 
 		const char* GetTitle()
 		{
-			return ScriptWindow_GetTitle(ptr());
+			return ScriptWindow_GetTitle(m_cptr);
 		}
 
 		void SetTitle(const char* title)
 		{
-			ScriptWindow_SetTitle(ptr(), title);
+			ScriptWindow_SetTitle(m_cptr, title);
 		}
 
-		void Add(Element elem)
+		void Add(SPElement elem)
 		{
-			ScriptWindow_Add(ptr(), elem.ptr());
+			ScriptWindow_Add(m_cptr, elem->ptr());
 			m_elements.push_back(elem);
 		}
 
-		void Remove(Element elem)
+		void Remove(SPElement elem)
 		{
-			ScriptWindow_Remove(ptr(), elem.ptr());
+			ScriptWindow_Remove(m_cptr, elem->ptr());
 			auto iter = std::find(m_elements.begin(), m_elements.end(), elem);
 			if (iter != m_elements.end())
 			{
@@ -81,11 +76,17 @@ namespace User
 
 		void Clear()
 		{
-			ScriptWindow_Clear(ptr());
+			ScriptWindow_Clear(m_cptr);
 			m_elements.clear();
 		}
 
-		std::vector<Element> m_elements;
+		std::vector<SPElement> m_elements;
+
+
+	private:
+		void* m_cptr;
 	};
+
+	typedef std::shared_ptr<ScriptWindow> SPScriptWindow;
 
 }

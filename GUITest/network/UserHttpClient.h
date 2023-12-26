@@ -19,78 +19,70 @@ extern "C"
 
 namespace User
 {
-	class HttpGetResult : public Wrapper
+	class HttpGetResult
 	{
-		class _Ptr : public CPtr
-		{
-		public:
-			_Ptr(void* ptr) : CPtr(ptr) {}
-			~_Ptr()
-			{
-				HttpGetResult_Delete(m_ptr);
-			}
-		};
 	public:
-		HttpGetResult(void* cptr) : Wrapper(new _Ptr(cptr))
+		HttpGetResult(void* cptr) : m_cptr(cptr)
 		{
 
 		}
 
-		HttpGetResult(const HttpGetResult& in) : Wrapper(in)
+		~HttpGetResult()
 		{
+			HttpGetResult_Delete(m_cptr);
+		}
 
+		void* ptr()
+		{
+			return m_cptr;
 		}
 
 		size_t GetSize()
 		{
-			return HttpGetResult_GetSize(ptr());
+			return HttpGetResult_GetSize(m_cptr);
 		}
 
 		void* GetData()
 		{
-			return HttpGetResult_GetData(ptr());
-		}
-
-	};
-
-	class HttpClient : public Wrapper
-	{
-		class _Ptr : public CPtr
-		{
-		public:
-			_Ptr(void* ptr) : CPtr(ptr) {}
-			~_Ptr()
-			{
-				HttpClient_Delete(m_ptr);
-			}
-		};
-
-	public:
-		HttpClient() : Wrapper(new _Ptr(HttpClient_New()))
-		{
-
-		}
-
-		HttpClient(const HttpClient& in) : Wrapper(in)
-		{
-
-		}
-
-		HttpGetResult Get(const char* url)
-		{
-			HttpGetResult res(HttpClient_Get(ptr(), url));			;
-			return res;
-		}
-
-		typedef void (*GetCallback)(HttpGetResult result, void* userData);
-		
-		void GetAsync(const char* url, GetCallback callback, void* userData)
-		{
-			TUserData* ud = new TUserData({ callback, userData });
-			HttpClient_GetAsync(ptr(), url, s_get_callback, ud);
+			return HttpGetResult_GetData(m_cptr);
 		}
 
 	private:
+		void* m_cptr;
+	};
+
+	typedef std::shared_ptr<HttpGetResult> SPHttpGetResult;
+
+	class HttpClient
+	{
+	public:
+		HttpClient() : m_cptr(HttpClient_New())
+		{
+
+		}
+
+		~HttpClient()
+		{
+			HttpClient_Delete(m_cptr);
+		}
+
+		SPHttpGetResult Get(const char* url)
+		{
+			SPHttpGetResult res(new HttpGetResult(HttpClient_Get(m_cptr, url)));
+			return res;
+		}
+
+		typedef void (*GetCallback)(SPHttpGetResult result, void* userData);
+
+		void GetAsync(const char* url, GetCallback callback, void* userData)
+		{
+			TUserData* ud = new TUserData({ callback, userData });
+			HttpClient_GetAsync(m_cptr, url, s_get_callback, ud);
+		}
+
+	private:
+		void* m_cptr;
+
 		struct TUserData
 		{
 			GetCallback callback;
@@ -100,11 +92,13 @@ namespace User
 		static void s_get_callback(void* ptr_result, void* userData)
 		{
 			TUserData* ud = (TUserData*)userData;
-			HttpGetResult res(ptr_result);			
+			SPHttpGetResult res(new HttpGetResult(ptr_result));
 			ud->callback(res, ud->userData);
 			delete ud;
 		}
-
 	};
+
+	typedef std::shared_ptr<HttpClient> SPHttpClient;
+	
 }
 
