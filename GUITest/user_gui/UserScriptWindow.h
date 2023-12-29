@@ -35,11 +35,6 @@ namespace User
 			ScriptWindow_Delete(m_cptr);
 		}
 
-		void* ptr()
-		{
-			return m_cptr;
-		}
-
 		bool GetShow()
 		{
 			return ScriptWindow_GetShow(m_cptr);

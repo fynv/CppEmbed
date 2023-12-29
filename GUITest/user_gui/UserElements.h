@@ -29,11 +29,6 @@ namespace User
 			Element_Delete(m_cptr);
 		}
 
-		void* ptr()
-		{
-			return m_cptr;
-		}
-
 		const char* GetName()
 		{
 			return Element_GetName(m_cptr);

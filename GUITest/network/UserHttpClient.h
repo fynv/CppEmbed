@@ -36,11 +36,6 @@ namespace User
 			HttpGetResult_Delete(m_cptr);
 		}
 
-		void* ptr()
-		{
-			return m_cptr;
-		}
-
 		size_t GetSize()
 		{
 			return HttpGetResult_GetSize(m_cptr);
