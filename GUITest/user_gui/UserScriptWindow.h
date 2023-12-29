@@ -22,7 +22,7 @@ namespace User
 	class ScriptWindow;
 	typedef std::shared_ptr<ScriptWindow> SPScriptWindow;
 
-	class ScriptWindow
+	class ScriptWindow : public Wrapper
 	{
 	public:
 		static SPScriptWindow New()
@@ -85,9 +85,8 @@ namespace User
 		std::vector<SPElement> m_elements;
 
 
-	private:
-		void* m_cptr;
-		ScriptWindow() : m_cptr(ScriptWindow_New())
+	protected:		
+		ScriptWindow() : Wrapper(ScriptWindow_New())
 		{
 
 

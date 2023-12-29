@@ -22,7 +22,7 @@ namespace User
 	class HttpGetResult;
 	typedef std::shared_ptr<HttpGetResult> SPHttpGetResult;
 
-	class HttpGetResult
+	class HttpGetResult : public Wrapper
 	{
 	public:
 		static SPHttpGetResult New(void* c_ptr)
@@ -50,18 +50,17 @@ namespace User
 			return HttpGetResult_GetData(m_cptr);
 		}
 
-	private:
-		HttpGetResult(void* cptr) : m_cptr(cptr)
+	protected:
+		HttpGetResult(void* cptr) : Wrapper(cptr)
 		{
 
-		}
-		void* m_cptr;
+		}		
 	};
 
 	class HttpClient;
 	typedef std::shared_ptr<HttpClient> SPHttpClient;
 
-	class HttpClient
+	class HttpClient : public Wrapper
 	{
 	public:
 		static SPHttpClient New()
@@ -87,9 +86,8 @@ namespace User
 			HttpClient_GetAsync(m_cptr, url, s_get_callback, ud);
 		}
 
-	private:
-		void* m_cptr;
-		HttpClient() : m_cptr(HttpClient_New())
+	protected:		
+		HttpClient() : Wrapper(HttpClient_New())
 		{
 
 		}

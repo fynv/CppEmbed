@@ -14,3 +14,111 @@
 
 
 #include <memory>
+
+namespace User
+{
+	template<typename T> class TToken;
+
+	class Token
+	{
+	public:
+		template<typename T>
+		T& To()
+		{
+			return *dynamic_cast<T*>(this);
+		}
+
+		template<typename T>
+		const T& To() const
+		{
+			return *dynamic_cast<const T*>(this);
+		}
+
+		template<typename T>
+		T& ToValue()
+		{
+			return To<TToken<T>>().value();
+		}
+
+		template<typename T>
+		const T& ToValue() const
+		{
+			return To<TToken<T>>().value();
+		}
+
+	protected:
+		Token() {}
+		virtual ~Token() {}
+	};
+
+	typedef std::shared_ptr<Token> TokenPtr;
+
+	template <typename T> class TTokenPtr;
+
+	template<typename T>
+	class TToken : public Token
+	{
+	public:
+		static TTokenPtr<T> New(T&& v = T())
+		{
+			return TTokenPtr<T>(new TToken<T>(T(v)));
+		}
+
+		static TTokenPtr<T> New(const T& v)
+		{
+			return TTokenPtr<T>(new TToken<T>(T(v)));
+		}
+
+		T& value()
+		{
+			return m_value;
+		}
+
+		const T& value() const
+		{
+			return m_value;
+		}
+
+	protected:
+		T m_value;
+		TToken(T&& v) : m_value(v)
+		{
+
+		}
+	};
+
+	template <typename T>
+	class TTokenPtr : public std::shared_ptr<TToken<T>>
+	{
+	public:
+		using std::shared_ptr<TToken<T>>::shared_ptr;
+
+		T& operator*() const
+		{
+			return std::shared_ptr<TToken<T>>::get()->value();
+		}
+
+		T* operator->() const
+		{
+			return &std::shared_ptr<TToken<T>>::get()->value();
+		}
+	};
+	
+	class Wrapper : public Token
+	{
+	public:
+		void* ptr()
+		{
+			return m_cptr;
+		}
+
+	protected:
+		void* m_cptr;
+		Wrapper(void* cptr) : m_cptr(cptr)
+		{
+
+		}
+	};
+	typedef std::shared_ptr<Wrapper> SPWrapper;
+
+}

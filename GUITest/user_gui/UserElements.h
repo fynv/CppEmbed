@@ -20,7 +20,7 @@ extern "C"
 
 namespace User
 {
-	class Element
+	class Element : public Wrapper
 	{
 	public:
 		virtual ~Element()
@@ -44,9 +44,8 @@ namespace User
 		}
 
 
-	protected:
-		void* m_cptr;
-		Element(void* cptr) : m_cptr(cptr)
+	protected:		
+		Element(void* cptr) : Wrapper(cptr)
 		{
 
 		}	
