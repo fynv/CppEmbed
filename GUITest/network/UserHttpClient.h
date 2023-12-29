@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include "ApiUtils.h"
 
 extern "C"
@@ -78,11 +79,9 @@ namespace User
 			return HttpGetResult::New(HttpClient_Get(m_cptr, url));
 		}
 
-		typedef void (*GetCallback)(SPHttpGetResult result, void* userData);
-
-		void GetAsync(const char* url, GetCallback callback, void* userData)
+		void GetAsync(const char* url, const std::function<void(SPHttpGetResult)>& callback)
 		{
-			TUserData* ud = new TUserData({ callback, userData });
+			auto* ud = new std::function<void(SPHttpGetResult)>(callback);
 			HttpClient_GetAsync(m_cptr, url, s_get_callback, ud);
 		}
 
@@ -92,18 +91,12 @@ namespace User
 
 		}
 
-		struct TUserData
-		{
-			GetCallback callback;
-			void* userData;
-		};
-
 		static void s_get_callback(void* ptr_result, void* userData)
 		{
-			TUserData* ud = (TUserData*)userData;
+			auto* callback = (std::function<void(SPHttpGetResult)>*)userData;			
 			SPHttpGetResult res = HttpGetResult::New(ptr_result);
-			ud->callback(res, ud->userData);
-			delete ud;
+			(*callback)(res);
+			delete callback;
 		}
 	};
 	

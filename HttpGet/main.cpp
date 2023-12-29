@@ -20,15 +20,14 @@ public:
 		memcpy(str.data(), res.GetData(), str.size() - 1);
 		Print(str.data());*/
 
-		m_http->GetAsync("https://www.gutenberg.org/cache/epub/1065/pg1065.txt", GetCallback, nullptr);
+		m_http->GetAsync("https://www.gutenberg.org/cache/epub/1065/pg1065.txt", 
+			[](SPHttpGetResult result)
+			{
+				std::vector<char> str(result->GetSize() + 1, 0);
+				memcpy(str.data(), result->GetData(), str.size() - 1);
+				Print(str.data());
+			});
 
-	}
-
-	static void GetCallback(SPHttpGetResult result, void* userData)
-	{
-		std::vector<char> str(result->GetSize() + 1, 0);
-		memcpy(str.data(), result->GetData(), str.size() - 1);
-		Print(str.data());
 	}
 
 	SPHttpClient m_http;

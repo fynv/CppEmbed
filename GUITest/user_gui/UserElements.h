@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include "ApiUtils.h"
 
 extern "C"
@@ -131,15 +132,23 @@ namespace User
 			return SPButton(new Button(name));
 		}
 		
-		void SetOnClick(ClickCallback callback, void* callback_data)
+		void SetOnClick(const std::function<void()>& callback)
 		{
-			Button_SetOnClick(m_cptr, callback, callback_data);
+			m_on_click = callback;
+			Button_SetOnClick(m_cptr, s_on_click, this);
 		}
 
 	protected:
 		Button(const char* name) : Element(Button_New(name))
 		{
 
+		}
+
+		std::function<void()> m_on_click;
+		static void s_on_click(void* data)
+		{
+			Button* self = (Button*)data;
+			self->m_on_click();
 		}
 	};
 
