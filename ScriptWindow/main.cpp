@@ -20,12 +20,12 @@ public:
 		, m_window(ScriptWindow::New())
 	{		
 		auto input_text = InputText::New("##URL", 256, "https://www.gutenberg.org/cache/epub/1065/pg1065.txt");
-		auto button_get = Button::New("Get!");
+		auto button_get = Button::New("Get!");		
 		button_get->SetOnClick([this, input_text]() {
-			m_http->GetAsync(input_text->GetText(), [this, input_text](SPHttpGetResult result)
+			std::string url = input_text->GetText();
+			m_http->GetAsync(url.c_str(), [this, url](SPHttpGetResult result)
 				{					
-					std::string text = "Text from: ";
-					text += input_text->GetText();
+					std::string text = "Text from: " + url;
 					Print(text.c_str());
 					std::vector<char> str(result->GetSize() + 1, 0);
 					memcpy(str.data(), result->GetData(), str.size() - 1);
