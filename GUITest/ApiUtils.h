@@ -85,6 +85,11 @@ namespace User
 		{
 
 		}
+
+		TToken(const T& v) : m_value(v)
+		{
+
+		}
 	};
 
 	template <typename T>
