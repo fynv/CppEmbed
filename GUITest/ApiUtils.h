@@ -111,11 +111,11 @@ namespace User
 
 		TTokenPtr() {}
 
-		TTokenPtr(T&& v) : std::shared_ptr(TToken<T>::New(v))
+		TTokenPtr(T&& v) : std::shared_ptr<TToken<T>>(TToken<T>::New(v))
 		{
 		}
 
-		TTokenPtr(const T& v) : std::shared_ptr(TToken<T>::New(v))
+		TTokenPtr(const T& v) : std::shared_ptr<TToken<T>>(TToken<T>::New(v))
 		{
 		}
 
