@@ -24,18 +24,6 @@ namespace User
 	{
 	public:
 		template<typename T>
-		static TTokenPtr<T> New(T&& v)
-		{
-			return TToken<T>::New(v);
-		}
-
-		template<typename T>
-		static TTokenPtr<T> New(const T& v)
-		{
-			return TToken<T>::New(v);
-		}
-
-		template<typename T>
 		T& To()
 		{
 			return *dynamic_cast<T*>(this);
@@ -108,16 +96,6 @@ namespace User
 	{
 	public:
 		using std::shared_ptr<TToken<T>>::shared_ptr;
-
-		TTokenPtr() {}
-
-		TTokenPtr(T&& v) : std::shared_ptr<TToken<T>>(TToken<T>::New(v))
-		{
-		}
-
-		TTokenPtr(const T& v) : std::shared_ptr<TToken<T>>(TToken<T>::New(v))
-		{
-		}
 
 		T& operator*() const
 		{
